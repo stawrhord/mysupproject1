@@ -1,0 +1,43 @@
+services:
+
+  app-python:
+    build:
+      context: ../DZ1/app
+      dockerfile: Dockerfile
+    image: app
+    container_name: DZ3-DZ1
+    ports:
+      - "5000:5000"
+    networks:
+      - dz3-net
+    depends_on:
+      - db
+
+  app-node:
+    build:
+      context: ../DZ2/app
+      dockerfile: Dockerfile
+    image: node:latest
+    container_name: DZ3-DZ2
+    ports:
+      - "3000:3000"
+    networks:
+      - dz3-net
+    depends_on:
+      - db
+
+  db:
+    image: redis:7-alpine
+    container_name: DZ3-db
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - dz3-db-data:/data
+    networks:
+      - dz3-net
+
+networks:
+  dz3-net:
+    driver: bridge
+
+volumes:
+  dz3-db-data:
